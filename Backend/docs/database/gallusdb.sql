@@ -92,4 +92,3 @@ ALTER TABLE "expenditures" ADD FOREIGN KEY ("category_id") REFERENCES "categorie
 
 ALTER TABLE "expenditures" ADD FOREIGN KEY ("cohort_id") REFERENCES "cohorts" ("id");
 
-ALTER TABLE "feed_purchases" ADD FOREIGN KEY ("cost") REFERENCES "feed_purchases" ("purchase_date");
