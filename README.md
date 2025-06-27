@@ -28,11 +28,11 @@ Gallus is a modern, modular and data-driven farm management system built to digi
 
 | Layer       | Stack                                  |
 |-------------|----------------------------------------|
-| Backend     | Go (Standard Library only) + PostgreSQL |
-| Frontend    | Reactnative + Tailwind CSS + shadcn/ui + Lucide Icons |
+| Backend     | Go (Standard Library only) + PostgreSQL|
+| Frontend    | Reactnative + Nativewind CSS           |
 | Database    | PostgreSQL                             |
-| Container   | Docker + Docker Compose (for local dev) |
-| Versioning  | Git                                     |
+| Container   | Docker + Docker Compose (for local dev)|
+| Versioning  | Git                                    |
 
 ## Project Structure
 
