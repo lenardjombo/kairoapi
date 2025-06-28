@@ -154,6 +154,6 @@ Tracks spending across categories and cohorts.
 
 Related Files
 
-[gallus_schema.sql]("docs/database/gallusdb.sql") – SQL file to create the entire schema
+[gallus_schema.sql](gallusdb.sql) – SQL file to create the entire schema
 
-[gallus_db_design]("docs/database/schema-design.pdf") – Visual ER diagram
+[gallus_db_design](schema-design.pdf) – Visual ER diagram
