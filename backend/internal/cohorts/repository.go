@@ -1,4 +1,4 @@
-package repositories
+package cohorts
 
 import (
 	"context"
@@ -27,7 +27,7 @@ func (r *PostgresCohortRepository) Create(ctx context.Context, c *models.Cohort)
         VALUES ($1, $2, $3, $4, $5, $6)
     `
     _, err := r.DB.ExecContext(ctx, query,
-        c.ID, c.Name, c.Breed, c.StartDate, time.Now(), time.Now(),
+        c.ID, c.Name, c.StartDate, time.Now(), time.Now(),
     )
     return err
 }
@@ -38,7 +38,7 @@ func (r *PostgresCohortRepository) GetByID(ctx context.Context, id string) (*mod
     row := r.DB.QueryRowContext(ctx, query, id)
 
     var c models.Cohort
-    err := row.Scan(&c.ID, &c.Name, &c.Breed, &c.StartDate, &c.CreatedAt, &c.UpdatedAt)
+    err := row.Scan(&c.ID, &c.Name,  &c.StartDate, &c.CreatedAt, &c.UpdatedAt)
     if err == sql.ErrNoRows {
         return nil, nil
     }
@@ -57,7 +57,7 @@ func (r *PostgresCohortRepository) List(ctx context.Context) ([]*models.Cohort, 
     var cohorts []*models.Cohort
     for rows.Next() {
         var c models.Cohort
-        err := rows.Scan(&c.ID, &c.Name, &c.Breed, &c.StartDate, &c.CreatedAt, &c.UpdatedAt)
+        err := rows.Scan(&c.ID, &c.Name, &c.StartDate, &c.CreatedAt, &c.UpdatedAt)
         if err != nil {
             return nil, err
         }
@@ -74,7 +74,7 @@ func (r *PostgresCohortRepository) Update(ctx context.Context, c *models.Cohort)
         SET name = $1, breed = $2, start_date = $3, updated_at = $4
         WHERE id = $5
     `
-    _, err := r.DB.ExecContext(ctx, query, c.Name, c.Breed, c.StartDate, time.Now(), c.ID)
+    _, err := r.DB.ExecContext(ctx, query, c.Name, c.StartDate, time.Now(), c.ID)
     return err
 }
 

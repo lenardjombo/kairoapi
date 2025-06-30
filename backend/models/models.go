@@ -3,11 +3,19 @@ package models
 
 import "time"
 
-type Cohort struct {
+type Cohort struct { //Done
     ID        string    `json:"id"`
     Name      string    `json:"name"`
-    Breed     string    `json:"breed"`
     StartDate time.Time `json:"start_date"`
+    CreatedAt time.Time `json:"created_at"`
+    UpdatedAt time.Time `json:"updated_at"`
+}
+
+type ProductionRecord struct {
+    ID        string    `json:"id"`
+    CohortID  string    `json:"cohort_id"`
+    Date      time.Time `json:"date"`
+    EggCount  int       `json:"egg_count"`
     CreatedAt time.Time `json:"created_at"`
     UpdatedAt time.Time `json:"updated_at"`
 }
@@ -32,14 +40,7 @@ type Payment struct {
     CreatedAt time.Time `json:"created_at"`
 }
 
-type ProductionRecord struct {
-    ID        string    `json:"id"`
-    CohortID  string    `json:"cohort_id"`
-    Date      time.Time `json:"date"`
-    EggCount  int       `json:"egg_count"`
-    CreatedAt time.Time `json:"created_at"`
-    UpdatedAt time.Time `json:"updated_at"`
-}
+
 
 type Supplier struct {
     ID        string    `json:"id"`
