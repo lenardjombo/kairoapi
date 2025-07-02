@@ -27,7 +27,11 @@ func (r *PostgresCohortRepository) Create(ctx context.Context, c *models.Cohort)
         VALUES ($1, $2, $3, $4, $5, $6)
     `
     _, err := r.DB.ExecContext(ctx, query,
-        c.ID, c.Name, c.StartDate, time.Now(), time.Now(),
+        c.ID, 
+        c.Name, 
+        c.StartDate, 
+        time.Now(), //created_at
+        time.Now(), //paid_at
     )
     return err
 }
@@ -86,6 +90,6 @@ func (r *PostgresCohortRepository) Delete(ctx context.Context, id string) error 
 }
 
 
-func NewCohortRepository(db *sql.DB) CohortRepository {
-	return &PostgresCohortRepository{DB: db}
+func NewCohortRepository(database *sql.DB) CohortRepository {
+	return &PostgresCohortRepository{DB: database}
 }

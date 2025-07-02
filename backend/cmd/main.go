@@ -10,7 +10,7 @@ import (
 func main() {
 	//connect to db
 	pkg.InitDB()
-	defer pkg.CloseDB()
+	defer pkg.DB.Close()
 
 	//start server
 	mux := http.NewServeMux()
