@@ -1,0 +1,24 @@
+# Ignore environment secrets
+.env
+
+# Ignore Go build outputs (if you build inside Backend/)
+*.exe
+*.out
+*.test
+
+# Node modules (for frontend)
+frontend/node_modules/
+
+# Frontend build output (Vite, etc.)
+frontend/dist/
+frontend/.vite/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Editor-specific files
+.vscode/
+*.swp
+*.swo
+.idea/
