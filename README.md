@@ -1,4 +1,4 @@
-# Gallus — Poultry Farm Management System
+# Gallus 
 
 Gallus is a modern, modular and data-driven farm management system built to digitize poultry operations. It enables farm owners to efficiently track egg production, sales, feed consumption and expenditures across multiple bird cohorts with actionable insights.
 
