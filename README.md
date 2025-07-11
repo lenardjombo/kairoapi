@@ -36,7 +36,7 @@ This is more than a basic task manager. KairoAPI is designed as a backend founda
 ### Clone and Run
 
 ```bash
-git clone https://github.com/yourusername/kairoapi.git 
+git clone https://github.com/lenardjombo/kairoapi.git 
 cd kairoapi
 cp .env.example .env
 docker-compose up --build
