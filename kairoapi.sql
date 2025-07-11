@@ -4,3 +4,4 @@ CREATE TABLE "project" (
   "created_at" timestamp,
   "updated_at" timestamp
 );
+
