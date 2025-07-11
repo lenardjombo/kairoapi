@@ -1,4 +1,4 @@
-module github.com/lenardjombo/gallus
+module github.com/lenardjombo/kairoapi
 
 go 1.24.4
 

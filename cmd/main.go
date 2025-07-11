@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/lenardjombo/gallus/pkg"
+	"github.com/lenardjombo/kairoapi/pkg"
 )
 
 func main() {
