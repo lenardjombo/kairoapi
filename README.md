@@ -76,4 +76,4 @@ This project is licensed under the MIT License.
 
 ---
 
-Let me know if you want the actual **starter code** (`main.go`, routes, handlers, etc.) scaffolded next — or if you'd like this README filled with real API samples once the routes are implemented.
+
