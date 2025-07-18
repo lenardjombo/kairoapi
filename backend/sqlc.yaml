@@ -1,0 +1,10 @@
+version: "1"
+
+packages:
+  - name: "db"
+    path: "./db/sqlc"       # ← GENERATED FILES GO HERE
+    queries: "./db/queries"
+    schema: "./db/migrations"
+    engine: "postgresql"
+    emit_json_tags: true
+    emit_empty_slices: true
