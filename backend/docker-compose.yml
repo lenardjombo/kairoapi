@@ -1,0 +1,27 @@
+services:
+  # backend:
+  #   image: backend
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile
+  #   ports:
+  #     - 8080:8080
+  #   environment:
+  #     - DATABASE_URL:${DB_URI}
+  #   depends_on:
+  #     - db
+  
+  db:
+    container_name: kairo_postgres
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
