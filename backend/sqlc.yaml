@@ -2,7 +2,7 @@ version: "1"
 
 packages:
   - name: "db"
-    path: "./db/sqlc"       # ← GENERATED FILES GO HERE
+    path: "./db/sqlc"       # ← GENERATED FILES
     queries: "./db/queries"
     schema: "./db/migrations"
     engine: "postgresql"
