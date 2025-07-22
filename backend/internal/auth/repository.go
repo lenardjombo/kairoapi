@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/lenardjombo/kairoapi/db/sqlc"
@@ -44,7 +45,15 @@ func (r *userRepository) ListUsers(ctx context.Context) ([]db.User, error) {
 }
 
 func (r *userRepository) UpdateUser(ctx context.Context, arg db.UpdateUserParams) error {
-	return r.q.UpdateUser(ctx, arg)
+	affectedrows,err := r.q.UpdateUser(ctx,arg)
+	if err != nil {
+		return fmt.Errorf("no rows affected")
+	}
+	if affectedrows == 0 {
+		return fmt.Errorf("user not found")
+	}
+
+	return nil
 }
 
 func (r *userRepository) DeleteUser(ctx context.Context, id uuid.UUID) error {

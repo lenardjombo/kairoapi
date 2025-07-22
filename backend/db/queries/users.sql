@@ -20,7 +20,7 @@ SELECT * FROM users
 ORDER BY email;
 
 
--- name: UpdateUser :exec
+-- name: UpdateUser :execrows
 UPDATE users
   set email = $2
 WHERE id = $1;
