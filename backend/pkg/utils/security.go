@@ -31,7 +31,7 @@ func HashedPassword(password string) (string, error) {
 	}
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		// CORRECTED: Return an empty string "" and the actual error
+		
 		return "", fmt.Errorf("failed to generate bcrypt hash: %w", err)
 	}
 	return string(bytes), nil
