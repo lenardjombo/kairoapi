@@ -7,31 +7,41 @@ package db
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (
-  email ,hashedpassword
+  id,email ,password,created_at,updated_at
 ) VALUES (
-  $1, $2
+  $1, $2, $3, $4, $5
 )
-RETURNING id, email, hashedpassword, created_at, updated_at
+RETURNING id, email, password, created_at, updated_at
 `
 
 type CreateUserParams struct {
-	Email          string `json:"email"`
-	Hashedpassword string `json:"hashedpassword"`
+	ID        uuid.UUID `json:"id"`
+	Email     string    `json:"email"`
+	Password  string    `json:"password"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, createUser, arg.Email, arg.Hashedpassword)
+	row := q.db.QueryRowContext(ctx, createUser,
+		arg.ID,
+		arg.Email,
+		arg.Password,
+		arg.CreatedAt,
+		arg.UpdatedAt,
+	)
 	var i User
 	err := row.Scan(
 		&i.ID,
 		&i.Email,
-		&i.Hashedpassword,
+		&i.Password,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -49,7 +59,7 @@ func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) error {
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, email, hashedpassword, created_at, updated_at FROM users
+SELECT id, email, password, created_at, updated_at FROM users
 WHERE email = $1 LIMIT 1
 `
 
@@ -59,7 +69,7 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 	err := row.Scan(
 		&i.ID,
 		&i.Email,
-		&i.Hashedpassword,
+		&i.Password,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -67,7 +77,7 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 }
 
 const getUserById = `-- name: GetUserById :one
-SELECT id, email, hashedpassword, created_at, updated_at FROM users
+SELECT id, email, password, created_at, updated_at FROM users
 WHERE id = $1 LIMIT 1
 `
 
@@ -77,7 +87,7 @@ func (q *Queries) GetUserById(ctx context.Context, id uuid.UUID) (User, error) {
 	err := row.Scan(
 		&i.ID,
 		&i.Email,
-		&i.Hashedpassword,
+		&i.Password,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -85,7 +95,7 @@ func (q *Queries) GetUserById(ctx context.Context, id uuid.UUID) (User, error) {
 }
 
 const listUsers = `-- name: ListUsers :many
-SELECT id, email, hashedpassword, created_at, updated_at FROM users
+SELECT id, email, password, created_at, updated_at FROM users
 ORDER BY email
 `
 
@@ -101,7 +111,7 @@ func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
 		if err := rows.Scan(
 			&i.ID,
 			&i.Email,
-			&i.Hashedpassword,
+			&i.Password,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {

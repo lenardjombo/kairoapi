@@ -22,3 +22,6 @@ db_down :
 
 sql_gen :
 		sqlc generate
+	
+del_sqlcfiles :
+		sudo rm -rf db/sqlc/db.go db/sqlc/models.go db/sqlc/users.sql.go 
