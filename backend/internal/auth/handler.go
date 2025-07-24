@@ -35,3 +35,5 @@ func (h *Handler) RegisterUser(ctx *gin.Context) {
 func (h *Handler) LoginUser(ctx *gin.Context){
 
 }
+
+//TODOS : Add register and login handlers

@@ -114,3 +114,5 @@ func (s *service) LoginUser(ctx context.Context, email, password string) (*db.Us
 
 	return &foundUser, nil
 }
+
+//Todos : Refactor (User DTOs for proper separation of concerns)
