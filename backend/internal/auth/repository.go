@@ -33,6 +33,7 @@ func (r *userRepository) CreateUser(ctx context.Context, arg db.CreateUserParams
 }
 
 func (r *userRepository) GetUserByEmail(ctx context.Context, email string) (db.User, error) {
+	
 	return r.q.GetUserByEmail(ctx, email)
 }
 

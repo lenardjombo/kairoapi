@@ -2,8 +2,8 @@ package auth
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
-	"regexp"
 	"time"
 
 	// "errors"
@@ -14,10 +14,8 @@ import (
 	"github.com/lenardjombo/kairoapi/db/sqlc"
 	"github.com/lenardjombo/kairoapi/models"
 	"github.com/lenardjombo/kairoapi/pkg/utils"
+	"golang.org/x/crypto/bcrypt"
 )
-
-// Compile the regex
-var compiledEmailRegex = regexp.MustCompile(`^[a-zA-Z0-9.!#$%&'*+/=?^_` + "`" + `{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$`)
 
 // AuthService defines the contract for user authentication and management.
 type AuthService interface {
@@ -86,5 +84,34 @@ func (s *service) RegisterUser(ctx context.Context, arg models.User) (*db.User, 
 }
 
 func (s *service) LoginUser(ctx context.Context, email, password string) (*db.User, error) {
-	return nil, nil
+	ctx, cancel := context.WithTimeout(ctx, 1*time.Second)
+
+	defer cancel()
+	
+	// Validate email format
+	err := utils.ValidateEmail(email)
+	if err != nil {
+		return nil,fmt.Errorf("invalid email format : %w",err)
+	}
+
+	foundUser,err := s.repo.GetUserByEmail(ctx,email)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil,fmt.Errorf("invalid credentials ")
+		}
+		return nil,fmt.Errorf("login failed to internal error : %w",err)
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(password))
+    if err != nil {
+		if err == bcrypt.ErrMismatchedHashAndPassword {
+			return nil,fmt.Errorf("invalid credentials ")
+		}
+		return nil,fmt.Errorf("login failed invalid credentials : %w",err)
+	}
+
+	//successful login
+	foundUser.Password = ""
+
+	return &foundUser, nil
 }
