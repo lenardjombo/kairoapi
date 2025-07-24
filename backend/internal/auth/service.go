@@ -87,7 +87,6 @@ func (s *service) LoginUser(ctx context.Context, email, password string) (*db.Us
 	ctx, cancel := context.WithTimeout(ctx, 1*time.Second)
 
 	defer cancel()
-
 	// Validate email format
 	err := utils.ValidateEmail(email)
 	if err != nil {
@@ -105,7 +104,7 @@ func (s *service) LoginUser(ctx context.Context, email, password string) (*db.Us
 	err = bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(password))
     if err != nil {
 		if err == bcrypt.ErrMismatchedHashAndPassword {
-			return nil,fmt.Errorf("invalid credentials ")
+			return nil,fmt.Errorf("invalid credentials : ")
 		}
 		return nil,fmt.Errorf("login failed invalid credentials : %w",err)
 	}
