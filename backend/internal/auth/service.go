@@ -1,3 +1,5 @@
+//github.com/lenardjombo/kairoapi/auth
+
 package auth
 
 import (
@@ -6,10 +8,6 @@ import (
 	"fmt"
 	"time"
 
-	// "errors"
-	// "fmt"
-	// "time"
-
 	"github.com/google/uuid"
 	"github.com/lenardjombo/kairoapi/db/sqlc"
 	"github.com/lenardjombo/kairoapi/models"
@@ -17,102 +15,82 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// AuthService defines the contract for user authentication and management.
 type AuthService interface {
-	RegisterUser(ctx context.Context, arg models.User) (*db.User, error)
-	LoginUser(ctx context.Context, email, password string) (*db.User, error)
-	// GetUserById(ctx context.Context, id uuid.UUID) (db.User, error)
-	// ListUsers(ctx context.Context) ([]db.User, error)
-	// UpdateUser(ctx context.Context, id uuid.UUID, arg db.UpdateUserParams) error
-	// DeleteUser(ctx context.Context, id uuid.UUID) error
+	RegisterUser(ctx context.Context, req models.CreateUserReq) (*models.CreateUserRes, error)
+	LoginUser(ctx context.Context, req models.LoginUserReq) (*models.LoginUserRes, error)
 }
 
-// service implements AuthService
 type service struct {
 	repo UserRepository
 }
 
-// Initialise NewAuth
 func NewAuthService(repo UserRepository) AuthService {
 	return &service{repo: repo}
 }
 
-func (s *service) RegisterUser(ctx context.Context, arg models.User) (*db.User, error) {
-	// Derives a new context from the incoming 'ctx' with a 1-second timeout.
-	// This timeout ensures that the subsequent database `CreateUser` call
-	// does not block indefinitely if the database is slow or unreachable.
+func (s *service) RegisterUser(ctx context.Context, req models.CreateUserReq) (*models.CreateUserRes, error) {
 	ctx, cancel := context.WithTimeout(ctx, 1*time.Second)
-
 	defer cancel()
-	//Hash the password here
-	hashedpassword, err := utils.HashedPassword(arg.Password)
-	if err != nil {
-		return nil, fmt.Errorf("failed to hash password : %w", err)
-	}
-	arg.Password = hashedpassword
 
-	// Create a new user in the database
-	if arg.ID == uuid.Nil {
-		arg.ID = uuid.New()
-	}
-	if arg.CreatedAt.IsZero() {
-		arg.CreatedAt = time.Now()
-	}
-	if arg.UpdatedAt.IsZero() {
-		arg.UpdatedAt = time.Now()
+	// Validate email
+	if err := utils.ValidateEmail(req.Email); err != nil {
+		return nil, fmt.Errorf("invalid email format: %w", err)
 	}
 
-	//validate the email
-	err = utils.ValidateEmail(arg.Email)
+	// Hash password
+	hashedPassword, err := utils.HashedPassword(req.Password)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to hash password: %w", err)
 	}
 
-	u := db.CreateUserParams{
-		ID:        arg.ID,
-		Email:     arg.Email,
-		Password:  arg.Password, //Hashed password
-		CreatedAt: arg.CreatedAt,
-		UpdatedAt: arg.UpdatedAt,
+	userID := uuid.New()
+	now := time.Now()
+
+	params := db.CreateUserParams{
+		ID:        userID,
+		Username:  req.Username,
+		Email:     req.Email,
+		Password:  hashedPassword,
+		CreatedAt: now,
+		UpdatedAt: now,
 	}
-	r, err := s.repo.CreateUser(ctx, u)
+
+	createdUser, err := s.repo.CreateUser(ctx, params)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create user: %w", err)
 	}
-	r.Password = ""
-	return &r, nil
+
+	res := &models.CreateUserRes{
+		ID:       createdUser.ID.String(),
+		Username: createdUser.Username,
+		Email:    createdUser.Email,
+	}
+	return res, nil
 }
 
-func (s *service) LoginUser(ctx context.Context, email, password string) (*db.User, error) {
+func (s *service) LoginUser(ctx context.Context, req models.LoginUserReq) (*models.LoginUserRes, error) {
 	ctx, cancel := context.WithTimeout(ctx, 1*time.Second)
-
 	defer cancel()
-	// Validate email format
-	err := utils.ValidateEmail(email)
-	if err != nil {
-		return nil,fmt.Errorf("invalid email format : %w",err)
+
+	if err := utils.ValidateEmail(req.Email); err != nil {
+		return nil, fmt.Errorf("invalid email: %w", err)
 	}
 
-	foundUser,err := s.repo.GetUserByEmail(ctx,email)
+	foundUser, err := s.repo.GetUserByEmail(ctx, req.Email)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil,fmt.Errorf("invalid credentials ")
+			return nil, fmt.Errorf("invalid credentials")
 		}
-		return nil,fmt.Errorf("login failed to internal error : %w",err)
+		return nil, fmt.Errorf("failed to find user: %w", err)
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(password))
-    if err != nil {
-		if err == bcrypt.ErrMismatchedHashAndPassword {
-			return nil,fmt.Errorf("invalid credentials : ")
-		}
-		return nil,fmt.Errorf("login failed invalid credentials : %w",err)
+	if err := bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(req.Password)); err != nil {
+		return nil, fmt.Errorf("invalid credentials")
 	}
 
-	//successful login
-	foundUser.Password = ""
-
-	return &foundUser, nil
+	res := &models.LoginUserRes{
+		ID:       foundUser.ID.String(),
+		Username: foundUser.Username,
+	}
+	return res, nil
 }
-
-//Todos : Refactor (User DTOs for proper separation of concerns)
