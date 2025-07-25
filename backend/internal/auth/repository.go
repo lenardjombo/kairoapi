@@ -1,3 +1,4 @@
+//github.com/lenardjombo/kairoapi/auth
 package auth
 
 import (
@@ -8,7 +9,6 @@ import (
 	"github.com/lenardjombo/kairoapi/db/sqlc"
 )
 
-// UserRepository defines the contract for user-related database operations.
 type UserRepository interface {
 	CreateUser(ctx context.Context, arg db.CreateUserParams) (db.User, error)
 	GetUserByEmail(ctx context.Context, email string) (db.User, error)
@@ -18,12 +18,10 @@ type UserRepository interface {
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 }
 
-
 type userRepository struct {
 	q *db.Queries
 }
 
-// NewUserRepository creates a new instance of userRepository.
 func NewUserRepository(q *db.Queries) UserRepository {
 	return &userRepository{q: q}
 }
@@ -45,14 +43,10 @@ func (r *userRepository) ListUsers(ctx context.Context) ([]db.User, error) {
 }
 
 func (r *userRepository) UpdateUser(ctx context.Context, arg db.UpdateUserParams) error {
-	affectedrows,err := r.q.UpdateUser(ctx,arg)
-	if err != nil {
-		return fmt.Errorf("no rows affected")
+	affectedRows, err := r.q.UpdateUser(ctx, arg)
+	if err != nil || affectedRows == 0 {
+		return fmt.Errorf("update failed: %w", err)
 	}
-	if affectedrows == 0 {
-		return fmt.Errorf("user not found")
-	}
-
 	return nil
 }
 
