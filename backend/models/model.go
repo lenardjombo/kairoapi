@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type User struct {
@@ -32,7 +33,14 @@ type LoginUserReq struct {
 }
 
 type LoginUserRes struct {
-	// accessToken string
+	AccessToken string `json:"access_token"`
 	ID          string `json:"id"`
 	Username    string `json:"username"`
+}
+
+// UserClaims defines the claims of the  JWT
+type UserClaims struct {
+	UserID   string `json:"user_id"`
+	Username string `json:"username"`
+	jwt.RegisteredClaims
 }
