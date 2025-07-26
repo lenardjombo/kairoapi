@@ -9,12 +9,17 @@ import (
 	"github.com/lenardjombo/kairoapi/internal/auth"
 	"github.com/lenardjombo/kairoapi/pkg"
 	"github.com/lenardjombo/kairoapi/routes"
+	jwt_pkg "github.com/lenardjombo/kairoapi/pkg/jwt"
 )
 
 func main() {
 	// 1. Init DB from pkg/db.go
 	if err := pkg.Init(); err != nil {
 		log.Fatal("Failed to initialize database:", err)
+	}
+	// InitJWT from pkg/jwt
+	if err := jwt_pkg.InitJWT(); err != nil {
+		log.Fatalf("Failed to initialize JWT secret: %v", err)
 	}
 
 	// 2. Init SQLC Queries
