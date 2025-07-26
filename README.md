@@ -9,11 +9,14 @@ This is more than a basic task manager. KairoAPI is designed as a backend founda
 ## Features
 ### Authentication Demos
  `/auth/register`  Register a new user  
- ![Register User](screenshots/register.png)         
+ ![Register User](screenshots/register.png) 
+ ---        
  `/auth/login`     Login and get token 
  ![Login User](screenshots/login.png)
+ ---
  `Protected route` api/protected/profile
  ![AuthBearer](screenshots/authbearer.png)
+ ---
 - User authentication with JWT (register, login
 - Project and task management (CRUD operations)
 - Task status tracking (Todo, In Progress, Done)
