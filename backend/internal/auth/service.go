@@ -13,6 +13,7 @@ import (
 	"github.com/lenardjombo/kairoapi/models"
 	"github.com/lenardjombo/kairoapi/pkg/utils"
 	"golang.org/x/crypto/bcrypt"
+	jwt_pkg "github.com/lenardjombo/kairoapi/pkg/jwt"
 )
 
 type AuthService interface {
@@ -88,9 +89,16 @@ func (s *service) LoginUser(ctx context.Context, req models.LoginUserReq) (*mode
 		return nil, fmt.Errorf("invalid credentials")
 	}
 
+	// Generate JWT token
+	accessToken, err := jwt_pkg.GenerateToken(foundUser.ID.String(), foundUser.Username)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate access token: %w", err)
+	}
+
 	res := &models.LoginUserRes{
-		ID:       foundUser.ID.String(),
-		Username: foundUser.Username,
+		ID:          foundUser.ID.String(),
+		Username:    foundUser.Username,
+		AccessToken: accessToken, // Include the generated token
 	}
 	return res, nil
 }
