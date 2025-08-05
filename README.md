@@ -1,6 +1,6 @@
 # KairoAPI
 
-**KairoAPI** is a modular, extensible project management API built in Go. It includes full authentication, task and project management and a scalable architecture to support future features like idea capture, collaboration and planning flows.
+**KairoAPI** is a modular, high perfomance project collaboration API built in Go. It includes full authentication, task and project management and a scalable architecture to support future features like idea capture, collaboration and planning flows.
 
 This is more than a basic task manager. KairoAPI is designed as a backend foundation for building real-world tools like productivity apps, knowledge systems and team project platforms.
 
